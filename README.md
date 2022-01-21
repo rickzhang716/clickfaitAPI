@@ -1,0 +1,2 @@
+# clickfaitAPI
+API for clickfait
