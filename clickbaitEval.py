@@ -1,11 +1,14 @@
+
 from flask.wrappers import Request
 from keras_preprocessing.text import tokenizer_from_json
 from numpy.core.fromnumeric import squeeze
+from google.auth import credentials
+
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
 import os
-import tensorflowjs as tfjs
+from google.cloud import language
 
 
 import pandas as pd
@@ -14,6 +17,8 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from flask import Flask
 from flask import request
+from flask import jsonify
+
 
 
 
@@ -21,10 +26,26 @@ from flask import request
 app = Flask(__name__)
 
 
+
 @app.route("/")
 def hello_world():
     return "<p>Hello, World!</p>"
 
+
+def analyze_text_sentiment(text):
+    client = language.LanguageServiceClient()
+    document = language.Document(
+        content=text, type_=language.Document.Type.PLAIN_TEXT)
+
+    response = client.analyze_sentiment(document=document)
+
+    sentiment = response.document_sentiment
+    results = dict(
+        text=text,
+        score=f"{sentiment.score:.1}",
+        magnitude=f"{sentiment.magnitude:.1}",
+    )
+    return results['score']
 
 vocab_size = 10000
 embedding_dim = 30
@@ -123,13 +144,22 @@ def main():
         mySequence, maxlen=max_length, padding='post', truncating='post')
     # print(model.predict(mySeqPadded)[0, 0])
     ans = model.predict(mySeqPadded)
-    ans *= 10000
-    ans = ans/100
-    ans = str(ans)
-    answers = ans.strip("[] ")
+    ans = ans*100
+    sentiment =  abs(float(analyze_text_sentiment(text[0])))
+    print(sentiment)
+    if ans>50:
+        print("true")
+        ans = str(ans)
+        answers = ans.strip("[] ")
+        response = {"clickbait":answers,"sentiment":sentiment}
+        print(response)
+    else:
+        ans = str(ans)
+        answers = ans.strip("[] ")
+        response = jsonify(clickbait=answers,sentiment=-1)
+    
     # print(answers)
-    return answers
+    return response
     # return ("{:0.2f}".format(ans))
 
-# # print(main(["I am going to buy a new car",
-# #       "The patriots win over the seahawks 41-23"]))
+
