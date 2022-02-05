@@ -18,7 +18,6 @@ from keras_preprocessing.text import tokenizer_from_json
 from numpy.core.fromnumeric import squeeze
 
 
-# . env/bin/activate
 app = Flask(__name__)
 
 @app.route("/")
@@ -47,40 +46,41 @@ max_length = 10
 training_size = 30000
 
 
-columnNames = ["headline", "clickbait"]
-df = pd.read_csv(
-    '/Users/rickzhang/Documents/code/htn/google/hack-the-north-2021/api/clickbait_data.csv')
+# columnNames = ["headline", "clickbait"]
+# df = pd.read_csv(
+#     'api/clickbait_data.csv')
 
-inputTitles = df.headline.to_list()
-clickbait = df.clickbait.to_list()
+# inputTitles = df.headline.to_list()
+# clickbait = df.clickbait.to_list()
 
 
-training_sentences = inputTitles[0:training_size]
-testing_sentences = inputTitles[training_size:]
-training_clickbait = clickbait[0:training_size]
-testing_clickbait = clickbait[training_size:]
+# training_sentences = inputTitles[0:training_size]
+# testing_sentences = inputTitles[training_size:]
+# training_clickbait = clickbait[0:training_size]
+# testing_clickbait = clickbait[training_size:]
 
+dataset = pd.read_csv("datasets/randomized_dataset.csv")
 
 tokenizer = Tokenizer(num_words=vocab_size, oov_token="<OOV>")
 
-tokenizer.fit_on_texts(training_sentences)
+tokenizer.fit_on_texts(dataset)
 word_index = tokenizer.word_index
 
 
-training_sequences = tokenizer.texts_to_sequences(training_sentences)
-training_padded = pad_sequences(
-    training_sequences, maxlen=max_length, padding='post', truncating='post')
+# training_sequences = tokenizer.texts_to_sequences(training_sentences)
+# training_padded = pad_sequences(
+#     training_sequences, maxlen=max_length, padding='post', truncating='post')
 
 
-testing_sequences = tokenizer.texts_to_sequences(testing_sentences)
-testing_padded = pad_sequences(
-    testing_sequences, maxlen=max_length, padding='post', truncating='post')
+# testing_sequences = tokenizer.texts_to_sequences(testing_sentences)
+# testing_padded = pad_sequences(
+#     testing_sequences, maxlen=max_length, padding='post', truncating='post')
 
 
-training_padded = np.array(training_padded)
-training_labels = np.array(training_clickbait)
-testing_padded = np.array(testing_padded)
-testing_labels = np.array(testing_clickbait)
+# training_padded = np.array(training_padded)
+# training_labels = np.array(training_clickbait)
+# testing_padded = np.array(testing_padded)
+# testing_labels = np.array(testing_clickbait)
 
 
 # model = tf.keras.Sequential(tf.keras.layers.Embedding(
