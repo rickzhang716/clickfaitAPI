@@ -1,13 +1,7 @@
 
-from flask.wrappers import Request
-from keras_preprocessing.text import tokenizer_from_json
-from numpy.core.fromnumeric import squeeze
-from google.auth import credentials
-
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
-import os
 from google.cloud import language
 
 
@@ -19,13 +13,13 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 
-
+from flask.wrappers import Request
+from keras_preprocessing.text import tokenizer_from_json
+from numpy.core.fromnumeric import squeeze
 
 
 # . env/bin/activate
 app = Flask(__name__)
-
-
 
 @app.route("/")
 def hello_world():
@@ -129,7 +123,6 @@ testing_labels = np.array(testing_clickbait)
 new_model = tf.keras.models.load_model('tfmodels')
 new_model.summary()
 model = new_model
-
 
 @app.route("/go", methods = ['GET','POST'])
 def main():
