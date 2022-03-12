@@ -1,21 +1,25 @@
 
 import tensorflow as tf
-import numpy as np
-import matplotlib.pyplot as plt
-from google.cloud import language
-
-
-import pandas as pd
 from tensorflow import keras
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
+from keras_preprocessing.text import tokenizer_from_json
+
+import numpy as np
+from numpy.core.fromnumeric import squeeze
+
+import matplotlib.pyplot as plt
+
+from google.cloud import language
+
+import pandas as pd
+
 from flask import Flask
 from flask import request
 from flask import jsonify
-
 from flask.wrappers import Request
-from keras_preprocessing.text import tokenizer_from_json
-from numpy.core.fromnumeric import squeeze
+
+
 
 
 app = Flask(__name__)
@@ -43,7 +47,7 @@ def analyze_text_sentiment(text):
 vocab_size = 10000
 embedding_dim = 30
 max_length = 10
-training_size = 30000
+training_size = 25000
 
 
 # columnNames = ["headline", "clickbait"]
@@ -59,7 +63,7 @@ training_size = 30000
 # training_clickbait = clickbait[0:training_size]
 # testing_clickbait = clickbait[training_size:]
 
-dataset = pd.read_csv("datasets/randomized_dataset.csv")
+dataset = pd.read_csv("datasets/clickbait_data.csv")
 
 tokenizer = Tokenizer(num_words=vocab_size, oov_token="<OOV>")
 
